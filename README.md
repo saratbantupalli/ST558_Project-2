@@ -9,7 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Sarat Bantupalli" />
 
+<meta name="date" content="2023-10-09" />
 
 <title>Untitled</title>
 
@@ -349,6 +351,8 @@ display: none;
 
 
 <h1 class="title toc-ignore">Untitled</h1>
+<h4 class="author">Sarat Bantupalli</h4>
+<h4 class="date">2023-10-09</h4>
 
 </div>
 
@@ -356,23 +360,140 @@ display: none;
 <p>output: <a href="https://saratbantupalli.github.io/ST558_Project-2/" class="uri">https://saratbantupalli.github.io/ST558_Project-2/</a> use
 this to render: rmarkdown::render(input = “project2.Rmd”, output_format
 = “html_document”, output_file = “READNE.md”)</p>
-<div id="github-documents" class="section level2">
-<h2>GitHub Documents</h2>
-<p>This is an R Markdown format used for publishing markdown documents
-to GitHub. When you click the <strong>Knit</strong> button all R code
-chunks are run and a markdown file (.md) suitable for publishing to
-GitHub is generated.</p>
+<p>This document is a vignette to contact an API and summarize the data.
+I demonstrated it by connecting to the publicly available fiscal data
+from the <a href="https://fiscaldata.treasury.gov/api-documentation/">US
+Federal Treasury</a>. The data is open source and does not require an
+API key to access it.</p>
+<p>I have built few functions to interact with some of the endpoints in
+the API, extract the data and summarize it.</p>
+<div id="required-packages" class="section level1">
+<h1>Required Packages</h1>
+<p>We need the following packages to retrieve the data and summarize
+it.</p>
+<ul>
+<li><code>tidyverse</code>: for data manipulation and plotting<br />
+</li>
+<li><code>httr</code>: to connect to the API and obtain the data in JSON
+format<br />
+</li>
+<li><code>jsonlite</code>: to parse data obtained in JSON data
+format</li>
+</ul>
+<pre class="r"><code>library(tidyverse)
+library(httr)
+library(jsonlite)</code></pre>
 </div>
-<div id="including-code" class="section level2">
-<h2>Including Code</h2>
-<p>You can include R code in the document as follows:</p>
+<div id="api-structure" class="section level1">
+<h1>API structure</h1>
+<p>The API has well written documentation that describes how to access
+different data sets. Based on this documentation, the components that
+make up a full valid API request include:</p>
+<ul>
+<li>Base URL, which is constant across all API URLs<br />
+</li>
+<li>Endpoint<br />
+</li>
+<li>Parameters and Filters (optional)</li>
+</ul>
+<div id="base-url" class="section level2">
+<h2>Base URL</h2>
+<p>The base URL for all APIs is constant.</p>
+<p><code>https://api.fiscaldata.treasury.gov/services/api/fiscal_service/</code></p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
+<div id="endpoints" class="section level2">
+<h2>Endpoints</h2>
+<p>List of all available data sets can be found on the <a href="https://fiscaldata.treasury.gov/datasets/">Treasury website</a>.
+This page summarizes how to obtain data from the endpoint of interest.
+The endpoints of interest that were included here:</p>
+<ul>
+<li>average interest rate on US Treasury securities: monthly interest
+rates in different treasury securities including bonds and notes</li>
+</ul>
+</div>
+<div id="parameters-and-filters" class="section level2">
+<h2>Parameters and Filters</h2>
+<p>This is optional part of the API URL to filter data.</p>
+<p>Although this part of the API URL is optional, I had an issue with
+the number of observations I could pull from the API. <strong>By
+default, the API limits 100 observations of data to be
+exchanged</strong>. To get around this issue the <em>pagination</em>
+option for the API URL was set to 10000. It gives me a great reflection
+that <em>each API is unique</em>.</p>
+</div>
+</div>
+<div id="api-interaction-functions" class="section level1">
+<h1>API Interaction Functions</h1>
+<div id="monthly-average-interest-rate" class="section level2">
+<h2>Monthly Average Interest Rate</h2>
+<p>Here I created a function, <code>avg_interest</code> that queries the
+<em>average interest rates on US treasury securities</em> API. There are
+2 broad categories of securities: marketable and non-marketable.
+<em>Marketable</em> securities are the ones that the public can purchase
+on the open market and might be of interest as an individual.
+Personally, I am interested in this type of securities as a safe bet for
+investing. By creating this function, I wanted to see the trends in
+marketable securities.</p>
+<p>Using this function, the user can customize their query to include
+any of the following 7 types of marketable securities: Treasury Bills,
+Treasury Notes, Treasury Bonds, Treasury Inflation-Protected Securities
+(TIPS), Treasury Floating Rate Notes (FRN), Federal Financing Bank, and
+Total Marketable. The default type of security is <em>all</em>, where
+the function outputs average interest rates for all marketable
+securities.</p>
+<pre class="r"><code>avg_interest &lt;- function(security_type = &quot;all&quot;) {
+  # Here we are joining different parts of the API URL we are interested in.
+  # The base URL for queries in the API is constant.
+  base_url &lt;- &quot;https://api.fiscaldata.treasury.gov/services/api/fiscal_service/&quot;
+  # The Endpoint of the average interest rates API
+  api_endpoint &lt;- &quot;v2/accounting/od/avg_interest_rates&quot;
+  # Optional Pagination field
+  pagination_data &lt;- &quot;?page[number]=1&amp;page[size]=10000&quot;
+  # Here the complete URL for API was constructed by pasting the base_url and api_endpoint url
+  output_url &lt;- paste0(base_url,api_endpoint,pagination_data)
+  #The GET function from httr package was used to connect to the API and get the data 
+  raw_data &lt;- GET(output_url)
+  # The raw data in JSON format is converted to a data frame in these 2 steps
+  parsed_data &lt;- fromJSON(rawToChar(raw_data$content))
+  parsed_data &lt;- data.frame((parsed_data$data))
+  # # Their are certain observations that have a value &quot;null&quot;. The rows with value &quot;null&quot; are removed then 
+  # the data is filtered to only save the securities which are Marketable
+  parsed_data &lt;- parsed_data %&gt;% filter(avg_interest_rate_amt != &quot;null&quot;) %&gt;% 
+    filter(security_type_desc == &quot;Marketable&quot;) %&gt;%
+    select(date = record_date, security = security_desc, 
+           avg_interest = avg_interest_rate_amt)
+  
+  # Filtering data based on the type of security chosen by the user
+  # If the user specified security_type is not equal to &quot;all&quot;, the function returns data with the specified security_type
+  if(security_type != &quot;all&quot;) {
+    parsed_data &lt;- parsed_data %&gt;% filter(security == security_type)
+  }
+  # If user specified security_type is &quot;all&quot;, no filtering of data is done
+  else {
+    
+  }
+  
+  return(parsed_data)
+}</code></pre>
+<p>user_query &lt;- function(data, type_of_marketable_security) { data
+%&gt;% if_else(type_of_marketable_security %in% “Treasury Bills”,
+filter(security == “Treasury Bills”),
+if_else(type_of_marketable_security %in% “Treasury Notes”,
+filter(security == “Treasury Notes” )),
+if_else(type_of_marketable_security %in% “Treasury Bonds”,
+filter(security == “Treasury Bonds” )),
+if_else(type_of_marketable_security %in% “Treasury Inflation-Protected
+Securities (TIPS)”, filter(security == “Treasury Inflation-Protected
+Securities (TIPS)” )), if_else(type_of_marketable_security %in%
+“Treasury Floating Rate Notes (FRN)”, filter(security == “Treasury
+Floating Rate Notes (FRN)” )), if_else(type_of_marketable_security %in%
+“Federal Financing Bank”, filter(security == “Federal Financing Bank”
+)), if_else(type_of_marketable_security %in% “Total Marketable”,
+filter(security == “Total Marketable” )),) }
+return(user_query(parsed_data, security_type))</p>
+<p>parsed_data %&gt;% ifelse(security_type != “all”, filter(security ==
+security_type), .)</p>
+</div>
 </div>
 
 
