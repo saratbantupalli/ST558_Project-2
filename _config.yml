@@ -1,1 +1,14 @@
-theme: jekyll-theme-slate
+theme: "minima"
+#theme: jekyll-theme-modernist - justin post
+
+kramdown:
+  syntax_highlighter_opts:
+    disable: true
+    
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+titles_from_headings:
+  strip_title: true
+  collections: true
