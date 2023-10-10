@@ -11,9 +11,9 @@
 
 <meta name="author" content="Sarat Bantupalli" />
 
-<meta name="date" content="2023-10-09" />
+<meta name="date" content="2023-10-10" />
 
-<title>Project-2</title>
+<title>Vignette about contacting US Treasury API</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,9 +350,10 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Project-2</h1>
+<h1 class="title toc-ignore">Vignette about contacting US Treasury
+API</h1>
 <h4 class="author">Sarat Bantupalli</h4>
-<h4 class="date">2023-10-09</h4>
+<h4 class="date">October 10, 2023</h4>
 
 </div>
 

@@ -1,15 +1,11 @@
 ---
-title: "Project-2"
-author: "Sarat Bantupalli"
-date: "2023-10-09"
-output:
+title: "Vignette about contacting US Treasury API"
+output: 
   rmarkdown::github_document: 
     toc: true
-    toc_float: true
-    code_folding: show
-    df_print: paged
-    html_preview: false
-
+    toc_depth: 2
+author: "Sarat Bantupalli"
+date: "October 10, 2023"
 ---
 
 output: https://saratbantupalli.github.io/ST558_Project-2/
