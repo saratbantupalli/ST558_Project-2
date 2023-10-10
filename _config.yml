@@ -1,8 +1,6 @@
 theme: "minima"
 #theme: jekyll-theme-modernist - justin post
 
-rss: rss
-
 kramdown:
   syntax_highlighter_opts:
     disable: true
@@ -14,10 +12,3 @@ plugins:
 titles_from_headings:
   strip_title: true
   collections: true
-
-defaults:
-  - scope:
-      path: ""
-      type: post
-    values:
-      tags: Posts #Other
