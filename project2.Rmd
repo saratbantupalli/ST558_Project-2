@@ -7,7 +7,7 @@ output: github_document
 
 output: https://saratbantupalli.github.io/ST558_Project-2/
 use this to render: rmarkdown::render(input = "project2.Rmd", output_format = "html_document", output_file = "READNE.md")
-
+hfhf
 output:
   github_document:
     toc: true

@@ -359,9 +359,9 @@ display: none;
 
 <p>output: <a href="https://saratbantupalli.github.io/ST558_Project-2/" class="uri">https://saratbantupalli.github.io/ST558_Project-2/</a> use
 this to render: rmarkdown::render(input = “project2.Rmd”, output_format
-= “html_document”, output_file = “READNE.md”)</p>
-<p>output: github_document: toc: true toc_float: true code_folding: show
-df_print: paged html_preview: false</p>
+= “html_document”, output_file = “READNE.md”) hfhf output:
+github_document: toc: true toc_float: true code_folding: show df_print:
+paged html_preview: false</p>
 <p>This document is a vignette to contact an API and summarize the data.
 I demonstrated it by connecting to the publicly available fiscal data
 from the <a href="https://fiscaldata.treasury.gov/api-documentation/">US
