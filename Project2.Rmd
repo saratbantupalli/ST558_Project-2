@@ -15,13 +15,6 @@ use this to render: rmarkdown::render(input = "README.Rmd", output_format = "htm
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval= TRUE, message = FALSE, warning = FALSE)
 ```
-output:
-  rmarkdown::github_document: 
-    toc: true
-    toc_float: true
-    code_folding: show
-    df_print: paged
-    html_preview: false
 
 This document is a vignette to contact an API and summarize the data. I demonstrated it by connecting to the publicly available fiscal data from the [US Federal Treasury](https://fiscaldata.treasury.gov/api-documentation/). The data is open source and does not require an API key to access it.  
 
@@ -104,7 +97,6 @@ avg_interest <- function(security_type = "all") {
   
   return(parsed_data)
 }
-
 ```
 
 
