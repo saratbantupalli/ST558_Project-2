@@ -1,13 +1,7 @@
 ---
-title: "Untitled"
+title: "Project-2"
 author: "Sarat Bantupalli"
 date: "2023-10-09"
-output: github_document
----
-
-output: https://saratbantupalli.github.io/ST558_Project-2/
-use this to render: rmarkdown::render(input = "project2.Rmd", output_format = "html_document", output_file = "READNE.md")
-hfhf
 output:
   github_document:
     toc: true
@@ -15,6 +9,12 @@ output:
     code_folding: show
     df_print: paged
     html_preview: false
+---
+
+output: https://saratbantupalli.github.io/ST558_Project-2/
+use this to render: rmarkdown::render(input = "project2.Rmd", output_format = "html_document", output_file = "README.md")
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval= TRUE, message = FALSE, warning = FALSE)

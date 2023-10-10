@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-10-09" />
 
-<title>Untitled</title>
+<title>Project-2</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,7 +350,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Untitled</h1>
+<h1 class="title toc-ignore">Project-2</h1>
 <h4 class="author">Sarat Bantupalli</h4>
 <h4 class="date">2023-10-09</h4>
 
@@ -359,9 +359,7 @@ display: none;
 
 <p>output: <a href="https://saratbantupalli.github.io/ST558_Project-2/" class="uri">https://saratbantupalli.github.io/ST558_Project-2/</a> use
 this to render: rmarkdown::render(input = “project2.Rmd”, output_format
-= “html_document”, output_file = “READNE.md”) hfhf output:
-github_document: toc: true toc_float: true code_folding: show df_print:
-paged html_preview: false</p>
+= “html_document”, output_file = “README.md”)</p>
 <p>This document is a vignette to contact an API and summarize the data.
 I demonstrated it by connecting to the publicly available fiscal data
 from the <a href="https://fiscaldata.treasury.gov/api-documentation/">US
