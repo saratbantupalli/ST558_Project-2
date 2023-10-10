@@ -8,6 +8,7 @@ output:
     toc_float: true
     code_folding: show
     df_print: paged
+    html_preview: false
 
 ---
 
