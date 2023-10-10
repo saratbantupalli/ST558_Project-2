@@ -360,6 +360,8 @@ display: none;
 <p>output: <a href="https://saratbantupalli.github.io/ST558_Project-2/" class="uri">https://saratbantupalli.github.io/ST558_Project-2/</a> use
 this to render: rmarkdown::render(input = “project2.Rmd”, output_format
 = “html_document”, output_file = “READNE.md”)</p>
+<p>output: github_document: toc: true toc_float: true code_folding: show
+df_print: paged html_preview: false</p>
 <p>This document is a vignette to contact an API and summarize the data.
 I demonstrated it by connecting to the publicly available fiscal data
 from the <a href="https://fiscaldata.treasury.gov/api-documentation/">US
@@ -475,24 +477,6 @@ securities.</p>
   
   return(parsed_data)
 }</code></pre>
-<p>user_query &lt;- function(data, type_of_marketable_security) { data
-%&gt;% if_else(type_of_marketable_security %in% “Treasury Bills”,
-filter(security == “Treasury Bills”),
-if_else(type_of_marketable_security %in% “Treasury Notes”,
-filter(security == “Treasury Notes” )),
-if_else(type_of_marketable_security %in% “Treasury Bonds”,
-filter(security == “Treasury Bonds” )),
-if_else(type_of_marketable_security %in% “Treasury Inflation-Protected
-Securities (TIPS)”, filter(security == “Treasury Inflation-Protected
-Securities (TIPS)” )), if_else(type_of_marketable_security %in%
-“Treasury Floating Rate Notes (FRN)”, filter(security == “Treasury
-Floating Rate Notes (FRN)” )), if_else(type_of_marketable_security %in%
-“Federal Financing Bank”, filter(security == “Federal Financing Bank”
-)), if_else(type_of_marketable_security %in% “Total Marketable”,
-filter(security == “Total Marketable” )),) }
-return(user_query(parsed_data, security_type))</p>
-<p>parsed_data %&gt;% ifelse(security_type != “all”, filter(security ==
-security_type), .)</p>
 </div>
 </div>
 

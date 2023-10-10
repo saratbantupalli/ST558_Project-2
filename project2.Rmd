@@ -2,6 +2,12 @@
 title: "Untitled"
 author: "Sarat Bantupalli"
 date: "2023-10-09"
+output: github_document
+---
+
+output: https://saratbantupalli.github.io/ST558_Project-2/
+use this to render: rmarkdown::render(input = "project2.Rmd", output_format = "html_document", output_file = "READNE.md")
+
 output:
   github_document:
     toc: true
@@ -9,10 +15,6 @@ output:
     code_folding: show
     df_print: paged
     html_preview: false
----
-
-output: https://saratbantupalli.github.io/ST558_Project-2/
-use this to render: rmarkdown::render(input = "project2.Rmd", output_format = "html_document", output_file = "READNE.md")
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval= TRUE, message = FALSE, warning = FALSE)
@@ -101,29 +103,6 @@ avg_interest <- function(security_type = "all") {
 }
 
 ```
-
-
-  user_query <- function(data, type_of_marketable_security) {
-    data %>% if_else(type_of_marketable_security %in% "Treasury Bills", 
-            filter(security == "Treasury Bills"),
-            if_else(type_of_marketable_security %in% "Treasury Notes", 
-                    filter(security == "Treasury Notes" )),
-            if_else(type_of_marketable_security %in% "Treasury Bonds", 
-                    filter(security == "Treasury Bonds" )),
-            if_else(type_of_marketable_security %in% "Treasury Inflation-Protected Securities (TIPS)", 
-                    filter(security == "Treasury Inflation-Protected Securities (TIPS)" )),
-            if_else(type_of_marketable_security %in% "Treasury Floating Rate Notes (FRN)", 
-                    filter(security == "Treasury Floating Rate Notes (FRN)" )),
-            if_else(type_of_marketable_security %in% "Federal Financing Bank", 
-                    filter(security == "Federal Financing Bank" )),
-            if_else(type_of_marketable_security %in% "Total Marketable", 
-                    filter(security == "Total Marketable" )),)
-  }
-  return(user_query(parsed_data, security_type))
-  
-
-parsed_data %>% ifelse(security_type != "all", filter(security == security_type), .)
-
 
 
 
