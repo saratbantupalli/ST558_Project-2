@@ -24,7 +24,7 @@ We need the following packages to connect to the API, retrieve the data, and sum
 + `jsonlite`: to parse data obtained in JSON data format  
 + `lubridate` : to work with datetime type data objects  
 + `corrplot`: to create a visual of correlations 
-+ `see` : to plot distribution of Treasury Securities
++ `see` : for half-violin half-dot plot distribution of Treasury Securities 
 
 ```{r}
 library(tidyverse)

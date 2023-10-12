@@ -26,7 +26,8 @@ and summarize it.
 - `jsonlite`: to parse data obtained in JSON data format  
 - `lubridate` : to work with datetime type data objects  
 - `corrplot`: to create a visual of correlations
-- `see` : to plot distribution of Treasury Securities
+- `see` : for half-violin half-dot plot distribution of Treasury
+  Securities
 
 ``` r
 library(tidyverse)
@@ -468,7 +469,7 @@ g1 <- treasury_securities_data %>%
 g1
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 From the plot it can be seen that if you are a *long term investor
 Treasury Bonds* are the best bet followed by Treasury Notes.
@@ -496,7 +497,7 @@ treasury_securities_data %>%
   labs(y = "monthly average interest rate", title = "Treasury Securities Half-Violin Plot")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 The plot above gives a distribution of the three Treasury Securities we
 are interested in. We can see the Treasury Bills have a higher
@@ -584,7 +585,7 @@ debt_data_long %>% filter(debt_type == "total_marketable_mil" |
                      y = "Debt in Millions") + theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 The national debt has steep curves after 2008 and 2020. Both these times
 represent economic downturns (2008 recession and 2020 pandemic induced
@@ -608,7 +609,7 @@ debt_data_long %>% filter(debt_type == "total_debt_mil" |
                      y = "Debt in Millions") + theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Interestingly the plot looks like a cumulative density function. For
 certain months the value of statutory debt limit was reported as 0.
@@ -640,7 +641,7 @@ Correlation <- cor(numeric_securities_data)
 corrplot(Correlation,  tl.pos = "lt")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 From the plot we can see that the total national debt has a *strong
 negative correlation with Treasury Bonds*. The national debt also has a
