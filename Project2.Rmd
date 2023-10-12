@@ -295,22 +295,38 @@ On average, from 2001 through 2023, Treasury Bonds earned the highest monthly in
 ### Tables for Treasury Bills, Bonds, and Notes
 The Federal Reserves target inflation is 2% year over year. In this section I want to determine the number of times investments in Treasury Securities will have a return lower than the Fed's target. Essentially I want to know the number of times my money is losing its value compared to inflation.  
 
-First the data is filtered for observations with monthly interest less than 2%. Then the data is grouped based on year of data and type of security. This was done to calculate average interest for each security per year. Since the Federal Reserve traget of inflation is per year, this step is necessary for comparison. A contingency table was then created to summarize this data.
+Using the `group_by` function, the data is first grouped based on year of data and type of security. The yearly average interest was then calculated. Since the Federal Reserve target of inflation is per year, this step is necessary for comparison. The data was then filtered for observations with less than 2% annual returns. A contingency table was then created to summarize this data.
+
 ```{r}
 securities_less_than_inflation_data <- treasury_securities_data %>% 
   filter(security == "Treasury Bills" | 
           security == "Treasury Bonds" | 
            security == "Treasury Notes") %>% 
-  filter(avg_interest <= 2)
-# Calculate average interest rate per year
-securities_less_than_inflation_data <- securities_less_than_inflation_data %>% 
   group_by(year, security) %>% 
-  summarise(annual_avg_interest = mean(avg_interest))
+  summarise(annual_avg_interest = mean(avg_interest)) %>% 
+  filter(annual_avg_interest <= 2)
 #Contingency table
 table(securities_less_than_inflation_data$security)
 ```
 
-The results show that in the past 23 years (2001 through 2023), *18 times Treasury Bills yielded less than the target* inflation rate of 2% while *Treasury Notes yielded 11 less than the Federal Reserve target*. On contrary, *Treasury Bonds always had a return greater than 2%* for the past 23 years. This makes them the best investment among the Treasuries of interest.  
+The results show that in the past 23 years (2001 through 2023), *16 times Treasury Bills yielded less than the target* inflation rate of 2% while *Treasury Notes yielded 10 less than the Federal Reserve target*. On contrary, *Treasury Bonds always had a return greater than 2%* for the past 23 years. This makes them the best investment among the Treasuries of interest.  
+
+I was also interested in looking at how Inflation Protected securities perform with respect to the 2% inflation target of the Federal Reserve. I created a contingency table to summarise these results.
+```{r}
+inflation_pegged_securities <- treasury_securities_data %>% 
+  filter(security == "Treasury Inflation-Indexed Notes" | 
+          security == "Treasury Inflation-Indexed Bonds" | 
+           security == "Treasury Inflation-Protected Securities (TIPS)") %>% 
+  group_by(year, security) %>% 
+  summarise(annual_avg_interest = mean(avg_interest)) %>% 
+  filter(annual_avg_interest <= 2)
+
+#Contingency table
+table(inflation_pegged_securities$security)
+
+```
+
+Interestingly, the Treasury Inflation-Protected Securities (TIPS) under performed the 2% inflation target 13 times in the past 23 years, although the interest rates on these related to the actual measured inflation in the economy. The  Treasury Inflation-Indexed Notes/ Bonds have an average annual return of more than 2% every year. 
 
 
 ### Plots for Treasury Bills, Bonds, and Notes 
@@ -359,6 +375,24 @@ debt_data <- debt_and_debt_limit()
 # Data was formatted into long format here
 debt_data_long <- debt_data %>% pivot_longer(cols = 2:6, names_to = "debt_type", values_to = "debt_millions") %>% drop_na
 ```
+
+### Summary for National Debt
+Using the `group_by()` function, to find the summary national debt based on type of debt from 2001 through 2023.
+```{r}
+# Here I used the separate function to split the date to get the year
+debt_data_long <- debt_data_long %>% 
+  separate(date, c("Year", "Month", "Day"), sep = "-", 
+           convert = TRUE, remove = FALSE) %>% 
+  select(date, Year, debt_type, debt_millions)
+
+# Summary table of national debt
+debt_data_long %>% group_by(Year, debt_type) %>% 
+  summarise(avg = mean(debt_millions), 
+            min = min(debt_millions), max = max(debt_millions))
+
+```
+
+The table shows how the components of national debt have been changing over the years. In 2001, the average marketable and average non-marketable debts were almost the same. The same trend was observed in 2008. The trend started changing in 2010. By 2019, marketable debt was almost 3 times non-marketable debt. By end of September 2023, this ratio increased to almost 3.5 times.  
 
 
 ### National Debt

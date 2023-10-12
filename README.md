@@ -394,37 +394,62 @@ Securities will have a return lower than the Fed’s target. Essentially I
 want to know the number of times my money is losing its value compared
 to inflation.
 
-First the data is filtered for observations with monthly interest less
-than 2%. Then the data is grouped based on year of data and type of
-security. This was done to calculate average interest for each security
-per year. Since the Federal Reserve traget of inflation is per year,
-this step is necessary for comparison. A contingency table was then
-created to summarize this data.
+Using the `group_by` function, the data is first grouped based on year
+of data and type of security. The yearly average interest was then
+calculated. Since the Federal Reserve target of inflation is per year,
+this step is necessary for comparison. The data was then filtered for
+observations with less than 2% annual returns. A contingency table was
+then created to summarize this data.
 
 ``` r
 securities_less_than_inflation_data <- treasury_securities_data %>% 
   filter(security == "Treasury Bills" | 
           security == "Treasury Bonds" | 
            security == "Treasury Notes") %>% 
-  filter(avg_interest <= 2)
-# Calculate average interest rate per year
-securities_less_than_inflation_data <- securities_less_than_inflation_data %>% 
   group_by(year, security) %>% 
-  summarise(annual_avg_interest = mean(avg_interest))
+  summarise(annual_avg_interest = mean(avg_interest)) %>% 
+  filter(annual_avg_interest <= 2)
 #Contingency table
 table(securities_less_than_inflation_data$security)
 ```
 
     ## 
     ## Treasury Bills Treasury Notes 
-    ##             18             11
+    ##             16             10
 
-The results show that in the past 23 years (2001 through 2023), *18
+The results show that in the past 23 years (2001 through 2023), *16
 times Treasury Bills yielded less than the target* inflation rate of 2%
-while *Treasury Notes yielded 11 less than the Federal Reserve target*.
+while *Treasury Notes yielded 10 less than the Federal Reserve target*.
 On contrary, *Treasury Bonds always had a return greater than 2%* for
 the past 23 years. This makes them the best investment among the
 Treasuries of interest.
+
+I was also interested in looking at how Inflation Protected securities
+perform with respect to the 2% inflation target of the Federal Reserve.
+I created a contingency table to summarise these results.
+
+``` r
+inflation_pegged_securities <- treasury_securities_data %>% 
+  filter(security == "Treasury Inflation-Indexed Notes" | 
+          security == "Treasury Inflation-Indexed Bonds" | 
+           security == "Treasury Inflation-Protected Securities (TIPS)") %>% 
+  group_by(year, security) %>% 
+  summarise(annual_avg_interest = mean(avg_interest)) %>% 
+  filter(annual_avg_interest <= 2)
+
+#Contingency table
+table(inflation_pegged_securities$security)
+```
+
+    ## 
+    ## Treasury Inflation-Protected Securities (TIPS) 
+    ##                                             13
+
+Interestingly, the Treasury Inflation-Protected Securities (TIPS) under
+performed the 2% inflation target 13 times in the past 23 years,
+although the interest rates on these related to the actual measured
+inflation in the economy. The Treasury Inflation-Indexed Notes/ Bonds
+have an average annual return of more than 2% every year.
 
 ### Plots for Treasury Bills, Bonds, and Notes
 
@@ -443,7 +468,7 @@ g1 <- treasury_securities_data %>%
 g1
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-147-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 From the plot it can be seen that if you are a *long term investor
 Treasury Bonds* are the best bet followed by Treasury Notes.
@@ -471,7 +496,7 @@ treasury_securities_data %>%
   labs(y = "monthly average interest rate", title = "Treasury Securities Half-Violin Plot")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-148-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 The plot above gives a distribution of the three Treasury Securities we
 are interested in. We can see the Treasury Bills have a higher
@@ -503,6 +528,47 @@ debt_data <- debt_and_debt_limit()
 debt_data_long <- debt_data %>% pivot_longer(cols = 2:6, names_to = "debt_type", values_to = "debt_millions") %>% drop_na
 ```
 
+### Summary for National Debt
+
+Using the `group_by()` function, to find the summary national debt based
+on type of debt from 2001 through 2023.
+
+``` r
+# Here I used the separate function to split the date to get the year
+debt_data_long <- debt_data_long %>% 
+  separate(date, c("Year", "Month", "Day"), sep = "-", 
+           convert = TRUE, remove = FALSE) %>% 
+  select(date, Year, debt_type, debt_millions)
+
+# Summary table of national debt
+debt_data_long %>% group_by(Year, debt_type) %>% 
+  summarise(avg = mean(debt_millions), 
+            min = min(debt_millions), max = max(debt_millions))
+```
+
+    ## # A tibble: 114 × 5
+    ## # Groups:   Year [23]
+    ##     Year debt_type                                avg       min      max
+    ##    <int> <chr>                                  <dbl>     <dbl>    <dbl>
+    ##  1  2001 balance_of_statutory_debt_limit_mil  260024.   78587.   376295.
+    ##  2  2001 statutory_debt_limit_mil            5950000  5950000   5950000 
+    ##  3  2001 total_debt_mil                      5776205. 5656182.  5943439.
+    ##  4  2001 total_marketable_mil                2931796. 2852885.  3017869.
+    ##  5  2001 total_nonmarketable_mil             2836036. 2738743.  2960438.
+    ##  6  2002 balance_of_statutory_debt_limit_mil  134271.      24.9  341687.
+    ##  7  2002 statutory_debt_limit_mil            6212500  5950000   6400000 
+    ##  8  2002 total_debt_mil                      6142279. 5937229.  6405707.
+    ##  9  2002 total_marketable_mil                3088737. 2968186.  3205690.
+    ## 10  2002 total_nonmarketable_mil             3053542. 2969043.  3200446.
+    ## # ℹ 104 more rows
+
+The table shows how the components of national debt have been changing
+over the years. In 2001, the average marketable and average
+non-marketable debts were almost the same. The same trend was observed
+in 2008. The trend started changing in 2010. By 2019, marketable debt
+was almost 3 times non-marketable debt. By end of September 2023, this
+ratio increased to almost 3.5 times.
+
 ### National Debt
 
 Here I try to visualize the national debt trend over the years. I
@@ -518,7 +584,7 @@ debt_data_long %>% filter(debt_type == "total_marketable_mil" |
                      y = "Debt in Millions") + theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-150-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 The national debt has steep curves after 2008 and 2020. Both these times
 represent economic downturns (2008 recession and 2020 pandemic induced
@@ -542,7 +608,7 @@ debt_data_long %>% filter(debt_type == "total_debt_mil" |
                      y = "Debt in Millions") + theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-151-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 Interestingly the plot looks like a cumulative density function. For
 certain months the value of statutory debt limit was reported as 0.
@@ -574,7 +640,7 @@ Correlation <- cor(numeric_securities_data)
 corrplot(Correlation,  tl.pos = "lt")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-152-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 From the plot we can see that the total national debt has a *strong
 negative correlation with Treasury Bonds*. The national debt also has a
